@@ -1,119 +1,84 @@
 const axios = require("axios");
-
-async function handleRequest(api, event, args, endpoint, type) {
-  try {
-    if (args.length < 2) {
-      return api.sendMessage(
-        `⚠️ Usage: ${type} [uid] [server]\nExample: ${type} 123456789 bd`,
-        event.threadID,
-        event.messageID
-      );
-    }
-
-    const uid = args[0];
-    const server = args[1];
-
-    const url = `https://hridoyxqc-ff.giize.com/api/${endpoint}?uid=${encodeURIComponent(uid)}&server=${encodeURIComponent(server)}`;
-    const res = await axios.get(url);
-
-    if (res.data) {
-      api.sendMessage(
-        `✅ Request Successful!\n\n📌 Command: ${type}\nUID: ${uid}\nServer: ${server}\nResponse: ${JSON.stringify(res.data, null, 2)}`,
-        event.threadID,
-        event.messageID
-      );
-    } else {
-      api.sendMessage(
-        "❌ No response received from the API.",
-        event.threadID,
-        event.messageID
-      );
-    }
-  } catch (err) {
-    console.error(err);
-    api.sendMessage(
-      "❌ An error occurred while executing the command.",
-      event.threadID,
-      event.messageID
-    );
-  }
-}
+const fs = require("fs");
+const path = require("path");
 
 module.exports = {
-  // 🔥 Free Fire Profile
-  ffprofile: {
-    config: {
-      name: "ffprofile",
-      version: "1.0.0",
-      author: "Farhan & Rahat",
-      role: 0,
-      prefix: true,
-      hasPermssion: 2,
-      cooldowns: 5,
-      description: "Fetch Free Fire profile image",
-      category: "Fun",
-      usages: "ffprofile [uid] [server]"
-    },
-    onStart: async function ({ api, event, args }) {
-      return handleRequest(api, event, args, "profile", "ffprofile");
+  config: {
+    name: "ffprofile",
+    aliases: ["ffp", "ffv", "freefirep", "ffpro"],
+    version: "2.2",
+    credits: "Farhan",
+    countDown: 5,
+    hasPermission: 0,
+    description: "Fetch Free Fire profile image (v2 with backup API)",
+    longDescription: "Fetch and send Free Fire profile PNG using UID via hridoy-ff API with automatic fallback to backup API.",
+    commandCategory: "fun",
+    guide: {
+      en: "{pn} <uid>\nExample: {pn} 12079916406"
     }
   },
 
-  // 🔥 Free Fire Profile Card
-  ffprofilecard: {
-    config: {
-      name: "ffprofilecard",
-      version: "1.0.0",
-      author: "Farhan & Rahat",
-      role: 0,
-      prefix: true,
-      hasPermssion: 2,
-      cooldowns: 5,
-      description: "Generate Free Fire profile card with custom branding",
-      category: "Fun",
-      usages: "ffprofilecard [uid] [server]"
-    },
-    onStart: async function ({ api, event, args }) {
-      return handleRequest(api, event, args, "profile-card", "ffprofilecard");
-    }
-  },
+  run: async function ({ api, event, args }) {
+    let uid = args[0]?.replace(/[^0-9]/g, "");
 
-  // 🔥 Free Fire Info
-  ffinfo: {
-    config: {
-      name: "ffinfo",
-      version: "1.0.0",
-      author: "Farhan & Rahat",
-      role: 0,
-      prefix: true,
-      hasPermssion: 2,
-      cooldowns: 5,
-      description: "Get detailed Free Fire user information",
-      category: "Fun",
-      usages: "ffinfo [uid] [server]"
-    },
-    onStart: async function ({ api, event, args }) {
-      return handleRequest(api, event, args, "info", "ffinfo");
+    // Auto-detect UID from reply if missing
+    if (!uid && event.type === "message_reply") {
+      const match = event.messageReply.body.match(/\d{5,}/);
+      if (match) uid = match[0];
     }
-  },
 
-  // 🔥 Free Fire Ban Check
-  ffcheckban: {
-    config: {
-      name: "ffcheckban",
-      version: "1.0.0",
-      author: "Farhan & Rahat",
-      role: 0,
-      prefix: true,
-      hasPermssion: 2,
-      cooldowns: 5,
-      description: "Check if a Free Fire user is banned",
-      category: "Fun",
-      usages: "ffcheckban [uid] [server]"
-    },
-    onStart: async function ({ api, event, args }) {
-      return handleRequest(api, event, args, "check_ban", "ffcheckban");
+    if (!uid) {
+      return api.sendMessage(
+        "⚠ Please provide a valid Free Fire UID.\nExample: ffprofile2 12079916406",
+        event.threadID
+      );
+    }
+
+    // Ensure cache directory exists
+    const cacheDir = path.join(__dirname, "cache");
+    if (!fs.existsSync(cacheDir)) fs.mkdirSync(cacheDir);
+
+    const filePath = path.join(cacheDir, `ff2_${uid}_${Date.now()}.png`);
+
+    // API endpoints
+    const mainAPI = `https://hridoy-ff-1.onrender.com/api/profile?uid=${uid}`;
+    const backupAPI = `https://nexalo-api.vercel.app/api/ff?id=${uid}`;
+
+    const loadingMsg = await api.sendMessage("⏳ | Generating your Free Fire profile image...", event.threadID);
+
+    try {
+      let response;
+      try {
+        response = await axios.get(mainAPI, { responseType: "arraybuffer", timeout: 25000 });
+      } catch {
+        console.warn("Main API failed, switching to backup API...");
+        response = await axios.get(backupAPI, { responseType: "arraybuffer", timeout: 25000 });
+      }
+
+      fs.writeFileSync(filePath, response.data);
+
+      await api.editMessage(
+        `✅ | Free Fire profile generated!\n🎮 UID: ${uid}\n based:frn \n💾 API: ${response.config.url.includes("hridoy-ff") ? "Main" : "Backup"}`,
+        loadingMsg.messageID
+      );
+
+      await api.sendMessage(
+        {
+          body: `✨ | Here’s your Free Fire profile:`,
+          attachment: fs.createReadStream(filePath)
+        },
+        event.threadID,
+        () => fs.unlinkSync(filePath)
+      );
+
+    } catch (error) {
+      console.error("FFProfile2 Error:", error.message);
+
+      let msg = "❌ | Failed to fetch profile. Please check the UID or try again later.";
+      if (error.response?.status === 400) msg = "⚠ | Missing or invalid UID.\nContact: t.me/FarhanGPT5";
+      else if (error.code === "ECONNABORTED") msg = "⌛ | Request timed out. Please try again.";
+
+      api.editMessage(msg, loadingMsg.messageID);
     }
   }
 };
-                                                                                                                 
