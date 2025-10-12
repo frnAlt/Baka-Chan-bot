@@ -1,55 +1,81 @@
-const axios = require ("axios");
-const fs = require ("fs-extra");
+const axios = require("axios");
+const fs = require("fs-extra");
 
 module.exports = {
   config: {
     name: "pair",
     aliases: [],
-    version: "1.0",
-    author: "Rishad",
-    countDown: 10,
+    version: "1.2",
+    author: "Farhan",
+    countDown: 5,
     role: 0,
-    shortDescription: " ",
+    shortDescription: "Pair two people randomly or custom",
     longDescription: "",
     category: "fun",
-    guide: "{pn}"
+    guide: "{pn} or {pn} @User"
   },
 
-  onStart: async function({ api, event, threadsData, usersData }) {
-
-    const { threadID, messageID, senderID } = event;
+  onStart: async function({ api, event, usersData }) {
+    const { threadID, messageID, senderID, mentions } = event;
     const { participantIDs } = await api.getThreadInfo(threadID);
-    var tle = Math.floor(Math.random() * 101);
-    var namee = (await usersData.get(senderID)).name
     const botID = api.getCurrentUserID();
-    const listUserID = participantIDs.filter(ID => ID != botID && ID != senderID);
-    var id = listUserID[Math.floor(Math.random() * listUserID.length)];
-    var name = (await usersData.get(id)).name
-    var arraytag = [];
-    arraytag.push({ id: senderID, tag: namee });
-    arraytag.push({ id: id, tag: name });
+    const nameSender = (await usersData.get(senderID)).name;
 
-    let Avatar = (await axios.get(`https://graph.facebook.com/${senderID}/picture?width=512&height=512&access_token=6628568379%7Cc1e620fa708a1d5696fb991c1bde5662`, { responseType: "arraybuffer" })).data;
-    fs.writeFileSync(__dirname + "/cache/avt.png", Buffer.from(Avatar, "utf-8"));
+    let uid2, name2;
 
-    let gifLove = (await axios.get(`https://i.ibb.co/wC2JJBb/trai-tim-lap-lanh.gif`, { responseType: "arraybuffer" })).data;
-    fs.writeFileSync(__dirname + "/cache/giflove.png", Buffer.from(gifLove, "utf-8"));
+    // === Custom pair: user mentions someone ===
+    if (Object.keys(mentions).length > 0) {
+      const mentionIDs = Object.keys(mentions);
+      uid2 = mentionIDs[0]; // Only take first mention
+      name2 = (await usersData.get(uid2)).name;
+    } 
+    // === Random pair mode ===
+    else {
+      const listUserID = participantIDs.filter(ID => ID != botID && ID != senderID);
+      uid2 = listUserID[Math.floor(Math.random() * listUserID.length)];
+      name2 = (await usersData.get(uid2)).name;
+    }
 
-    let Avatar2 = (await axios.get(`https://graph.facebook.com/${id}/picture?width=512&height=512&access_token=6628568379%7Cc1e620fa708a1d5696fb991c1bde5662`, { responseType: "arraybuffer" })).data;
-    fs.writeFileSync(__dirname + "/cache/avt2.png", Buffer.from(Avatar2, "utf-8"));
+    const lovePercent = Math.floor(Math.random() * 101);
+    const arrayTag = [
+      { id: senderID, tag: nameSender },
+      { id: uid2, tag: name2 }
+    ];
 
-    var imglove = [];
+    // === Fetch avatars + GIF in parallel ===
+    try {
+      const [avatar1, avatar2, gifLove] = await Promise.all([
+        axios.get(`https://graph.facebook.com/${senderID}/picture?width=512&height=512&access_token=6628568379%7Cc1e620fa708a1d5696fb991c1bde5662`, { responseType: "arraybuffer" }),
+        axios.get(`https://graph.facebook.com/${uid2}/picture?width=512&height=512&access_token=6628568379%7Cc1e620fa708a1d5696fb991c1bde5662`, { responseType: "arraybuffer" }),
+        fs.pathExists(__dirname + "/cache/giflove.png") 
+          ? fs.readFile(__dirname + "/cache/giflove.png") 
+          : axios.get(`https://i.ibb.co/wC2JJBb/trai-tim-lap-lanh.gif`, { responseType: "arraybuffer" }).then(res => {
+              fs.writeFileSync(__dirname + "/cache/giflove.png", res.data);
+              return res.data;
+            })
+      ]);
 
-    imglove.push(fs.createReadStream(__dirname + "/cache/avt.png"));
-    imglove.push(fs.createReadStream(__dirname + "/cache/giflove.png"));
-    imglove.push(fs.createReadStream(__dirname + "/cache/avt2.png"));
+      // Write avatars to cache
+      fs.writeFileSync(__dirname + "/cache/avt1.png", avatar1.data);
+      fs.writeFileSync(__dirname + "/cache/avt2.png", avatar2.data);
 
-    var msg = {
-      body: `🥰Successful pairing!💌Wish you two hundred years of happiness💕Double ratio: ${tle}% ${namee} 💓 ${name}`,
-      mentions: arraytag,
-      attachment: imglove
-    };
+      const attachments = [
+        fs.createReadStream(__dirname + "/cache/avt1.png"),
+        fs.createReadStream(__dirname + "/cache/giflove.png"),
+        fs.createReadStream(__dirname + "/cache/avt2.png")
+      ];
 
-    return api.sendMessage(msg, event.threadID, event.messageID);
+      const msg = {
+        body: `🥰 Successful pairing! 💌 Wishing you both eternal happiness 💕\nDouble ratio: ${lovePercent}%\n${nameSender} 💓 ${name2}`,
+        mentions: arrayTag,
+        attachment: attachments
+      };
+
+      return api.sendMessage(msg, threadID, messageID);
+
+    } catch (err) {
+      console.error("Pair command error:", err);
+      return api.sendMessage("❌ Error generating pair. Try again later.", threadID, messageID);
+    }
   }
 };
