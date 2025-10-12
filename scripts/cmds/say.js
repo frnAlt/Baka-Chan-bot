@@ -1,175 +1,63 @@
-const axios = require('axios');
+const axios = require("axios");
 
 module.exports = {
-	config: {
-		name: "say",
-		aliases: ["say"],
-		version: "1.0",
-		author: "MILAN",
-		countDown: 1,
-		role: 0,
-		shortDescription: "say something",
-		longDescription: "",
-		category: "Fun",
-		guide: {
-			vi: "{pn} text ",
-			en: "{pn} text "
-		}
-	},
-	onStart: async function ({ api, message, args, event}) {
- let lng = "en"
- let say;
-		if(ln.includes(args[0])){
- lng = args[0]
- args.shift()
- say = encodeURIComponent(args.join(" "))
- } else{ say = args.join(" ")}
-			try {
-				let url = `https://translate.google.com/translate_tts?ie=UTF-8&tl=${lng}&client=tw-ob&q=${say}`
-message.reply({body:"",
-attachment: await global.utils.getStreamFromURL(url)
-})
-					} catch (e) {
-console.log(e)
-message.reply(`Enter text lmao `) }
- }
+  config: {
+    name: "say",
+    aliases: ["tts", "voice"],
+    version: "2.0",
+    author: "MILAN & Farhan",
+    countDown: 1,
+    role: 0,
+    shortDescription: "Text-to-speech with character or language voices",
+    longDescription: "",
+    category: "Fun",
+    guide: {
+      en: "{pn} <voice/lang> <text>\nExample:\n• {pn} en Hello world\n• {pn} goku Kamehameha!"
+    },
+  },
+
+  onStart: async function ({ api, message, args, event }) {
+    if (!args[0]) return message.reply("⚠️ Please enter a voice or text.");
+
+    let voice = args[0].toLowerCase();
+    let text = args.slice(1).join(" ");
+
+    if (!text) {
+      text = voice;
+      voice = "en";
+    }
+
+    try {
+      let audioUrl;
+
+      // ✅ Detect if user used a known character name
+      const characterVoices = [
+        "goku", "spongebob", "batman", "mario", "pikachu",
+        "obama", "trump", "sonic", "walterwhite", "megumin"
+      ];
+
+      if (characterVoices.includes(voice)) {
+        // 🟢 Uberduck TTS API for character voices
+        const res = await axios.post(
+          "https://api.uberduck.ai/speak-synchronous",
+          { speech: text, voice },
+          { auth: { username: "anonymous", password: "anonymous" } }
+        );
+        audioUrl = res.data.path;
+      } else {
+        // 🟡 Fallback to Google Translate TTS for normal languages
+        const say = encodeURIComponent(text);
+        audioUrl = `https://translate.google.com/translate_tts?ie=UTF-8&tl=${voice}&client=tw-ob&q=${say}`;
+      }
+
+      if (!audioUrl) return message.reply("❌ Voice generation failed.");
+
+      const audioStream = await global.utils.getStreamFromURL(audioUrl);
+      return message.reply({ body: `🎙️ ${voice} says:`, attachment: audioStream });
+
+    } catch (err) {
+      console.error(err);
+      message.reply("❌ Failed to generate voice. Try another one.");
+    }
+  },
 };
-const ln = [
- "af",
- "sq",
- "ar",
- "ay",
- "eu",
- "bn",
- "bs",
- "bg",
- "my",
- "ca",
- "km",
- "ch",
- "ce",
- "hr",
- "cs",
- "da",
- "dv",
- "nl",
- "en",
- "et",
- "fi",
- "fr",
- "de",
- "el",
- "gu",
- "he",
- "hu",
- "is",
- "id",
- "it",
- "ja",
- "jv",
- "kn",
- "kr",
- "ks",
- "kk",
- "rw",
- "kv",
- "kg",
- "ko",
- "kj",
- "ku",
- "ky",
- "lo",
- "la",
- "lv",
- "lb",
- "li",
- "ln",
- "lt",
- "lu",
- "mk",
- "mg",
- "ms",
- "ml",
- "mt",
- "gv",
- "mi",
- "mr",
- "mh",
- "ro",
- "mn",
- "na",
- "nv",
- "nd",
- "ng",
- "ne",
- "se",
- "no",
- "nb",
- "nn",
- "ii",
- "oc",
- "oj",
- "or",
- "om",
- "os",
- "pi",
- "pa",
- "ps",
- "fa",
- "pl",
- "pt",
- "qu",
- "rm",
- "rn",
- "ru",
- "sm",
- "sg",
- "sa",
- "sc",
- "sr",
- "sn",
- "sd",
- "si",
- "sk",
- "sl",
- "so",
- "st",
- "nr",
- "es",
- "su",
- "sw",
- "ss",
- "sv",
- "tl",
- "ty",
- "tg",
- "ta",
- "tt",
- "te",
- "th",
- "bo",
- "ti",
- "to",
- "ts",
- "tn",
- "tr",
- "tk",
- "tw",
- "ug",
- "uk",
- "ur",
- "uz",
- "ve",
- "vi",
- "vo",
- "wa",
- "cy",
- "fy",
- "wo",
- "xh",
- "yi",
- "yo",
- "za",
- "zu",
- "nɪ",
-]
