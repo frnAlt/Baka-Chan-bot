@@ -10,7 +10,7 @@ module.exports = {
     role: 0,
     countDown: 5,
     shortDescription: "Generate a GitHub profile card",
-    longDescription: "Uses the sus-apis GitHub-card API to generate a styled card image of a GitHub profile.",
+    longDescription: "Uses the Profile Cards API to generate a styled card image of a GitHub profile.",
     category: "utility",
     guide: {
       en: "{p}githubcrd <username>"
@@ -29,7 +29,7 @@ module.exports = {
 
     try {
       // Call the API
-      const apiUrl = `https://sus-apis.onrender.com/api/github-card?username=${encodeURIComponent(username)}`;
+      const apiUrl = `https://profile-cards-api.vercel.app/api/profile?name=${encodeURIComponent(username)}&location=Unknown&title=Developer&imageLink=https://avatars.githubusercontent.com/${encodeURIComponent(username)}&socialMedia=GitHub&socialMediaUsername=${encodeURIComponent(username)}`;
       const res = await axios.get(apiUrl, { responseType: 'arraybuffer' });
 
       // If API returns image data directly
