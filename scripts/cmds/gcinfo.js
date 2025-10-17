@@ -1,40 +1,56 @@
-const fs = require("fs");
-const request = require("request");
+const fs = require("fs/promises");
+const path = require("path");
+const axios = require("axios");
 
 module.exports.config = {
   name: "gcinfo",
-  version: "1.1.0",
+  version: "1.2.0",
   hasPermssion: 1,
   credits: "Farhan",
   description: "Shows detailed group information",
   commandCategory: "box chat",
   usages: "gcinfo",
   cooldowns: 3,
-  dependencies: []
+  dependencies: ["axios"]
 };
 
-module.exports.run = async function({ api, event }) {
-  let threadInfo = await api.getThreadInfo(event.threadID);
-  let memberCount = threadInfo.participantIDs.length;
+module.exports.run = async function ({ api, event }) {
+  try {
+    const threadInfo = await api.getThreadInfo(event.threadID);
+    const memberCount = threadInfo.participantIDs.length;
 
-  let males = 0, females = 0, unknown = 0;
-  for (let user of threadInfo.userInfo) {
-    if (user.gender === "MALE") males++;
-    else if (user.gender === "FEMALE") females++;
-    else unknown++;
-  }
+    // Count genders
+    let males = 0, females = 0, unknown = 0;
+    if (threadInfo.userInfo && Array.isArray(threadInfo.userInfo)) {
+      for (let user of threadInfo.userInfo) {
+        if (user.gender === "MALE") males++;
+        else if (user.gender === "FEMALE") females++;
+        else unknown++;
+      }
+    } else {
+      unknown = memberCount;
+    }
 
-  let admins = threadInfo.adminIDs.length;
-  let messageCount = threadInfo.messageCount || 0;
-  let icon = threadInfo.emoji || "None";
-  let threadName = threadInfo.threadName || "Unnamed Group";
-  let threadID = threadInfo.threadID;
-  let approval = threadInfo.approvalMode ? "ON" : "OFF";
+    const admins = threadInfo.adminIDs.length;
+    const messageCount = threadInfo.messageCount || 0;
+    const icon = threadInfo.emoji || "None";
+    const threadName = threadInfo.threadName || "Unnamed Group";
+    const threadID = threadInfo.threadID;
+    const approval = threadInfo.approvalMode ? "ON" : "OFF";
 
-  const callback = () => api.sendMessage(
-    {
-      body: 
-`─── Group Information ───
+    const tempDir = path.join(__dirname, "cache");
+    await fs.mkdir(tempDir, { recursive: true });
+    const imagePath = path.join(tempDir, "group.png");
+
+    // Download group image or use default
+    const imageUrl = threadInfo.imageSrc || "https://i.imgur.com/3Q4cYxC.png";
+    const response = await axios.get(encodeURI(imageUrl), { responseType: "arraybuffer" });
+    await fs.writeFile(imagePath, Buffer.from(response.data, "binary"));
+
+    // Send message with attachment
+    await api.sendMessage(
+      {
+        body: `─── Group Information ───
 • Name: ${threadName}
 • ID: ${threadID}
 • Approval Mode: ${approval}
@@ -48,15 +64,18 @@ module.exports.run = async function({ api, event }) {
 • Admins: ${admins}
 • Total Messages: ${messageCount}
 ──────────────────────`,
-      attachment: fs.createReadStream(__dirname + "/cache/group.png")
-    },
-    event.threadID,
-    () => fs.unlinkSync(__dirname + "/cache/group.png"),
-    event.messageID
-  );
+        attachment: fs.createReadStream(imagePath)
+      },
+      event.threadID,
+      async () => {
+        // Delete temp image after sending
+        await fs.unlink(imagePath).catch(() => {});
+      },
+      event.messageID
+    );
 
-  return request(encodeURI(threadInfo.imageSrc || "https://i.imgur.com/3Q4cYxC.png"))
-    .pipe(fs.createWriteStream(__dirname + "/cache/group.png"))
-    .on("close", () => callback());
+  } catch (error) {
+    console.error(error);
+    return api.sendMessage("❌ Failed to get group info. Please try again later.", event.threadID, event.messageID);
+  }
 };
-        
