@@ -1,76 +1,174 @@
 const axios = require("axios");
 const fs = require("fs");
-const ytdl = require("@distube/ytdl-core");
+
+const baseApiUrl = () => "https://pipedapi.kavin.rocks";
 
 module.exports = {
   config: {
     name: "ytb",
+    version: "2.0.0",
     aliases: ["youtube"],
-    version: "2.1.0",
-    author: "Farhan",
-    countDown: 3,
+    author: "Farhan (Rewritten using Piped API)",
+    countDown: 5,
     role: 0,
+    description: {
+      en: "Download video, audio, and info from YouTube (via open-source API)"
+    },
     category: "media",
-    description: "Search or download YouTube videos or audio instantly",
     guide: {
-      en: "{pn} <query> -v → video\n{pn} <query> -a → audio\n{pn} <query> → search results"
+      en:
+        "  {pn} [video|-v] [<video name>|<video link>]\n" +
+        "  {pn} [audio|-a] [<video name>|<video link>]\n" +
+        "  {pn} [info|-i] [<video name>|<video link>]\n\n" +
+        "  Example:\n" +
+        "  {pn} -v chipi chipi chapa chapa\n" +
+        "  {pn} -a chipi chipi chapa chapa\n" +
+        "  {pn} -i chipi chipi chapa chapa"
     }
   },
 
-  onStart: async function ({ message, args }) {
-    const query = args.join(" ");
-    if (!query) return message.reply("⚠️ | Enter a YouTube title or link.");
+  onStart: async ({ api, args, event, commandName }) => {
+    if (!args[0])
+      return api.sendMessage("❗ Please specify an option (-v, -a, or -i)", event.threadID);
 
-    const isAudio = query.includes("-a");
-    const isVideo = query.includes("-v");
-    const searchQuery = query.replace(/-a|-v/g, "").trim();
+    const action = args[0].toLowerCase();
+    args.shift();
+    const keyword = args.join(" ");
+    if (!keyword) return api.sendMessage("❗ Please provide a YouTube link or search term.", event.threadID);
+
+    const urlRegex =
+      /^(?:https?:\/\/)?(?:www\.)?(?:youtube\.com|youtu\.be)\/(?:watch\?v=|shorts\/)?([^&\n?#]+)/;
+    const match = keyword.match(urlRegex);
+    const isLink = !!match;
+    let videoID = isLink ? match[1] : null;
 
     try {
-      // 🔎 Fast search
-      const { data } = await axios.get(`https://pipedapi.kavin.rocks/search?q=${encodeURIComponent(searchQuery)}`);
-      const videos = data.filter(v => v.type === "video");
-      if (videos.length === 0) return message.reply("❌ | No results found.");
-
-      const first = videos[0];
-      const url = `https://www.youtube.com/watch?v=${first.id}`;
-      const title = first.title;
-
-      if (!isAudio && !isVideo) {
-        // 🧾 Show top 5 results (fast)
-        const resultText = videos
-          .slice(0, 5)
-          .map((v, i) => `${i + 1}. ${v.title}\n👤 ${v.uploaderName}\n⏱ ${v.duration}\n🔗 https://youtu.be/${v.id}\n`)
-          .join("\n");
-        return message.reply("🎬 **Top 5 Results:**\n\n" + resultText);
+      if (isLink) {
+        if (action === "-i" || action === "info") {
+          const info = await getVideoInfo(videoID);
+          const message = formatInfo(info);
+          await api.sendMessage({ body: message, attachment: await getThumbnail(info.thumbnailUrl) }, event.threadID);
+        } else if (action === "-v" || action === "-a") {
+          const stream = await getStream(videoID);
+          const format = action === "-a" ? "audio" : "video";
+          const url = action === "-a" ? stream.audioStreams[0].url : stream.videoStreams[0].url;
+          const fileName = `ytb_${format}_${videoID}.${action === "-a" ? "mp3" : "mp4"}`;
+          await downloadFile(url, fileName);
+          await api.sendMessage(
+            { body: `✅ | ${stream.title}\n📦 | Format: ${format.toUpperCase()}`, attachment: fs.createReadStream(fileName) },
+            event.threadID,
+            () => fs.unlinkSync(fileName)
+          );
+        }
+        return;
       }
 
-      const filePath = __dirname + `/${Date.now()}.${isAudio ? "mp3" : "mp4"}`;
-      const stream = ytdl(url, {
-        filter: isAudio ? "audioonly" : "videoandaudio",
-        quality: isAudio ? "highestaudio" : "highestvideo",
-        highWaterMark: 1 << 25 // prevents lag in long videos
-      });
+      // If keyword search instead of link
+      const results = (await axios.get(`${baseApiUrl()}/search?q=${encodeURIComponent(keyword)}`)).data;
+      if (!results.length) return api.sendMessage("❌ No results found.", event.threadID);
 
-      const file = fs.createWriteStream(filePath);
-      stream.pipe(file);
+      const msg = results
+        .slice(0, 6)
+        .map((v, i) => `${i + 1}. ${v.title}\n⏳ ${v.duration} | 👀 ${v.views}\n📺 ${v.uploaderName}\n`)
+        .join("\n");
 
-      message.reply(`⬇️ | Downloading ${isAudio ? "audio" : "video"}: ${title}`);
-
-      file.on("finish", async () => {
-        await message.reply({
-          body: `${isAudio ? "🎵" : "🎬"} | **${title}**`,
-          attachment: fs.createReadStream(filePath)
-        });
-        fs.unlinkSync(filePath);
-      });
-
-      stream.on("error", err => {
-        console.error(err);
-        message.reply("❌ | Download failed. Try another video.");
-      });
+      const thumbnails = await Promise.all(results.slice(0, 6).map(v => getThumbnail(v.thumbnail)));
+      api.sendMessage(
+        { body: msg + "\nReply with a number to choose.", attachment: thumbnails },
+        event.threadID,
+        (err, info) => {
+          global.GoatBot.onReply.set(info.messageID, {
+            commandName,
+            messageID: info.messageID,
+            author: event.senderID,
+            results,
+            action
+          });
+        },
+        event.messageID
+      );
     } catch (err) {
       console.error(err);
-      message.reply("⚠️ | Something went wrong while processing your request.");
+      api.sendMessage("⚠️ Error occurred: " + err.message, event.threadID);
+    }
+  },
+
+  onReply: async ({ api, event, Reply }) => {
+    const { results, action } = Reply;
+    const choice = parseInt(event.body);
+    if (isNaN(choice) || choice <= 0 || choice > results.length)
+      return api.sendMessage("❌ Invalid choice. Reply with a valid number.", event.threadID);
+
+    const selected = results[choice - 1];
+    const videoID = selected.url.split("v=")[1] || selected.url.split("/").pop();
+
+    try {
+      if (action === "-v" || action === "video") {
+        const stream = await getStream(videoID);
+        const fileName = `ytb_video_${videoID}.mp4`;
+        await downloadFile(stream.videoStreams[0].url, fileName);
+        await api.sendMessage(
+          { body: `🎬 | ${stream.title}\nResolution: ${stream.videoStreams[0].quality}`, attachment: fs.createReadStream(fileName) },
+          event.threadID,
+          () => fs.unlinkSync(fileName)
+        );
+      } else if (action === "-a" || action === "audio") {
+        const stream = await getStream(videoID);
+        const fileName = `ytb_audio_${videoID}.mp3`;
+        await downloadFile(stream.audioStreams[0].url, fileName);
+        await api.sendMessage(
+          { body: `🎵 | ${stream.title}\nAudio: ${stream.audioStreams[0].quality}`, attachment: fs.createReadStream(fileName) },
+          event.threadID,
+          () => fs.unlinkSync(fileName)
+        );
+      } else if (action === "-i" || action === "info") {
+        const info = await getVideoInfo(videoID);
+        const message = formatInfo(info);
+        await api.sendMessage({ body: message, attachment: await getThumbnail(info.thumbnailUrl) }, event.threadID);
+      }
+    } catch (err) {
+      console.error(err);
+      api.sendMessage("❌ Error while processing your choice: " + err.message, event.threadID);
     }
   }
 };
+
+// Helper functions
+async function getStream(videoID) {
+  const { data } = await axios.get(`${baseApiUrl()}/streams/${videoID}`);
+  return data;
+}
+
+async function getVideoInfo(videoID) {
+  const { data } = await axios.get(`${baseApiUrl()}/streams/${videoID}`);
+  return {
+    title: data.title,
+    duration: data.duration,
+    uploader: data.uploader,
+    views: data.views,
+    thumbnailUrl: data.thumbnailUrl,
+    uploadDate: data.uploadDate
+  };
+}
+
+function formatInfo(info) {
+  return (
+    `🎬 Title: ${info.title}\n` +
+    `🕒 Duration: ${info.duration}s\n` +
+    `📺 Channel: ${info.uploader}\n` +
+    `👀 Views: ${info.views}\n` +
+    `📅 Uploaded: ${info.uploadDate}`
+  );
+}
+
+async function downloadFile(url, pathName) {
+  const response = await axios.get(url, { responseType: "arraybuffer" });
+  fs.writeFileSync(pathName, Buffer.from(response));
+  return pathName;
+}
+
+async function getThumbnail(url) {
+  const response = await axios.get(url, { responseType: "stream" });
+  response.data.path = "thumbnail.jpg";
+  return response.data;
+}
