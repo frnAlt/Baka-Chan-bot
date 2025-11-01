@@ -6,7 +6,7 @@ module.exports = {
   config: {
     name: "anime",
     aliases: ["supanime", "ani"],
-    version: "1.0",
+    version: "1.1",
     author: "Farhan",
     countDown: 10,
     role: 0,
@@ -14,7 +14,7 @@ module.exports = {
       en: "Generate anime style image"
     },
     longDescription: {
-      en: "Generate an anime style image from a text prompt using SupAnime API"
+      en: "Generate an anime style image from a text prompt using a free working API"
     },
     category: "ai-image",
     guide: {
@@ -31,10 +31,13 @@ module.exports = {
 
       await message.reply("⏳ Generating anime image...");
 
-      const apiUrl = `https://dev.oculux.xyz/api/supanime?prompt=${encodeURIComponent(prompt)}`;
-      const imgPath = path.join(__dirname, "cache", `anime_${Date.now()}.jpg`);
+      // 🛠️ Replace with a working free API for image generation
+      const apiUrl = `https://some-free-anime-image.api/generate?prompt=${encodeURIComponent(prompt)}`;
 
+      const imgPath = path.join(__dirname, "cache", `anime_${Date.now()}.jpg`);
       const res = await axios.get(apiUrl, { responseType: "arraybuffer" });
+
+      fs.mkdirSync(path.dirname(imgPath), { recursive: true });
       fs.writeFileSync(imgPath, res.data);
 
       await message.reply({
@@ -42,7 +45,10 @@ module.exports = {
         attachment: fs.createReadStream(imgPath)
       });
 
-      setTimeout(() => fs.unlinkSync(imgPath), 5000); // cleanup cache
+      // Clean up after a delay
+      setTimeout(() => {
+        try { fs.unlinkSync(imgPath); } catch(e) { /* ignore */ }
+      }, 5000);
 
     } catch (err) {
       console.error("anime command error:", err.message);
