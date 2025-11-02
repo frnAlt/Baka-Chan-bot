@@ -1,0 +1,15 @@
+{
+    "Language": "en",
+    "AutoUpdate": false,
+    "MainColor": "#9900FF",
+    "MainName": "[ FCA-GOATBOT ]",
+    "Config": "default",
+    "DevMode": false,
+    "Login2Fa": false,
+    "AutoLogin": false,
+    "EncryptFeature": false,
+    "ResetDataLogin": false,
+    "AntiGetInfo": {
+        "Database_Type": "default"
+    }
+}

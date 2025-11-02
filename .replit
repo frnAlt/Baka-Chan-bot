@@ -1,2 +1,34 @@
+modules = ["python-3.11", "nodejs-20"]
 [agent]
 expertMode = true
+
+[workflows]
+runButton = "Project"
+
+[[workflows.workflow]]
+name = "Project"
+mode = "parallel"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "baka-chan-bot"
+
+[[workflows.workflow]]
+name = "baka-chan-bot"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "node index.js"
+
+[workflows.workflow.metadata]
+outputType = "console"
+
+[[ports]]
+localPort = 65535
+externalPort = 80
+
+[nix]
+channel = "stable-25_05"
+packages = ["util-linux", "cairo", "pango", "libjpeg", "giflib", "librsvg", "pixman"]
