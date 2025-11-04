@@ -43,242 +43,167 @@
 - [📸 **Screenshots**](#-screenshots)
 - [✨ **Copyright (C)**](#-copyright-c)
 - [📜 **License**](#-license)
+- 
 
-<hr>
+[![unnamed-3-2.jpg](https://i.postimg.cc/bwBpGb9q/unnamed-3-2.jpg)](https://postimg.cc/mPC0JPnn)
+
+<h1 align="center"><img src="./dashboard/images/logo-non-bg.png" width="22px"> Baka-Chan - Bot Chat Messenger</h1>
+
+<p align="center">
+  <a href="https://nodejs.org/dist/v16.20.0">
+    <img src="https://img.shields.io/badge/Nodejs%20Support-16.x-brightgreen.svg?style=flat-square" alt="Nodejs Support v16.x">
+  </a>
+  <img alt="size" src="https://img.shields.io/github/repo-size/frn-development/Baka-Chan-bot.svg?style=flat-square&label=size">
+  <img alt="visitors" src="https://visitor-badge.laobi.icu/badge?style=flat-square&page_id=frn-development.Baka-Chan-bot">
+  <img alt="license" src="https://img.shields.io/badge/license-MIT-green?style=flat-square&color=brightgreen">
+</p>
+
+---
+
 
 ## 📝 **Note**
-- This is a messenger chat bot using a personal account, using an [unofficial api](https://github.com/ntkhang03/fb-chat-api/blob/master/DOCS.md) ([Origin here](https://github.com/Schmavery/facebook-chat-api)) and this may lead to facebook account being locked due to spam or other reasons. 
-- So, I recommend using a clone account (one that you're willing to throw away at any time)
-- ***I am not responsible for any problems that may arise from using this bot.***
+- This is a personal chat bot using a Messenger account via an **unofficial API**.
+- Use a clone account to prevent risking your main Facebook account.
+- Author is **not responsible** for any account issues or bans.
+
+---
 
 ## 🚧 **Requirements**
-- **Node.js 20.x** or higher ([Download](https://nodejs.org/en/download/))
-- A **Facebook account** (preferably a clone/secondary account)
-- **Facebook cookies** from your account for login
-- Basic knowledge of **JavaScript/Node.js** (recommended)
+- Node.js 16.x [Download](https://nodejs.org/dist/v16.20.0)
+- Basic knowledge of **JavaScript / Node.js**
+- Unofficial Facebook chat API knowledge
+- added new api.
 
-## 📝 **Tutorial - Cookie Setup**
+---
+### nexus-fca api 
+This is a maintained fork of the original `nexus-fca` Messenger API, adapted for my **Chika Shirogane** bot and compatible with **GoatBot-V2** (with modified source).
 
-### How to Get Facebook Cookies:
+### Install directly from GitHub
+```bash
+npm install tas33n/nexus-fca
+```
 
-**Method 1: Using Browser Extension (Recommended)**
-1. Install a cookie extension:
-   - Chrome/Edge: [EditThisCookie](https://chrome.google.com/webstore/detail/editthiscookie/fngmhnnpilhplaeedifhccceomclgfbg)
-   - Firefox: [Cookie-Editor](https://addons.mozilla.org/en-US/firefox/addon/cookie-editor/)
-2. Log into Facebook with your bot account
-3. Click the extension icon → Export cookies
-4. Copy all cookies in JSON format
-5. Paste into `account.txt` (replace all existing content)
+Or add to your `package.json`:
+```json
+"dependencies": {
+  "nexus-fca": "github:tas33n/nexus-fca"
+}
+```
 
-**Method 2: Using Developer Tools**
-1. Log into Facebook
-2. Press F12 to open Developer Tools
-3. Go to "Application" or "Storage" tab
-4. Find "Cookies" → "https://www.facebook.com"
-5. Copy important cookies: `sb`, `datr`, `c_user`, `xs`, `fr`
-6. Format as JSON array in `account.txt`
+### Usage
+Import and use as you would the main module:
+```js
+const login = require('nexus-fca');
+(async () => {
+  const api = await login({ appState: require('./appstate.json') });
+  // ...
+})();
+```
 
-**Important Notes:**
-- Make sure c_user cookie matches your Facebook UID
-- Cookies expire, refresh them every 7-30 days
-- Use a secondary/clone Facebook account
-- Keep your cookies private and secure
+## 🏁 **Getting Started**
+1. Clone the repository:
+```bash
+git clone https://github.com/frn-development/Baka-Chan-bot.git
+cd Baka-Chan-bot
+````
 
-### Quick Start:
-1. Add your Facebook cookies to `account.txt`
-2. Add your Facebook UID to `config.json` under `adminBot`
-3. Run: `npm start`
-4. Bot will connect and start listening for messages!
+2. Install dependencies:
 
-## 🔔 **How to get notification when have new update?**
-- Click on the `Watch` button in the upper right corner of the screen and select `Custom` and select `Pull requests` and `Releases` and click `Apply` to get notified when there is a new update.
+```bash
+npm install
+```
 
-## 🆙 **How to Update**
-Tutorial has been uploaded on YouTube
-- on phone/repl: https://youtu.be/grVeZ76HlgA?t=1342
-- on vps/computer: https://youtu.be/uCbSYNQNEwY?t=508
+3. Run the bot:
 
-## 🛠️ **How to create new commands**
-- See [here](https://github.com/ntkhang03/Goat-Bot-V2/blob/main/DOCS.md)
+```bash
+npm run 
+```
+
+> ⚡ `f` script runs the bot with default configuration.
+
+---
+
+## 💡 **How It Works**
+
+* Baka-Chan listens to **new messages, reactions, and events** in chat.
+* It executes commands based on **permission levels** and **admin settings**.
+* Commands can be triggered by message, reply, or reaction.
+* Event handlers are in `scripts/events`, commands in `scripts/cmds`.
+
+---
+
+## 🛠️ **Creating New Commands**
+
+* All commands are in `scripts/cmds/`.
+* Event scripts go in `scripts/events/`.
+* Use existing commands as templates for new functionality.
+
+---
 
 ## 💭 **Support**
-If you have major coding issues with this bot, please join and ask for help.
-- https://discord.com/invite/DbyGwmkpVY (recommended)
-- https://www.facebook.com/groups/goatbot
-- https://www.facebook.com/groups/goatbot/permalink/493150412403231
-- https://m.me/j/AbYrIGusyc0M402z
-- ~~https://t.me/gatbottt~~ (no longer supported)
-- ***Please do not inbox me, I do not respond to private messages, any questions please join the chat group for answers. ThankThanks!***
 
-## 📚 **Support Languages in source code**
-- Currently, the bot supports 2 languages:
-- [x] `en: English`
-- [x] `vi: Vietnamese`
+* Join the community for support:
 
-- Change language in `config.json` file
-- You can customize the language in the folder `languages/`, `languages/cmds/` and `languages/events/`
+  * [Discord](https://discord.com/invite/DbyGwmkpVY) (recommended)
+  * [Facebook Group](https://www.facebook.com/groups/goatbot)
+  * Contact author via email: `ffjisan804@gmail.com`
+
+> ⚠️ Do not DM the author for full bot setup support.
+
+---
+
+## 🌐 **Suggested Bot Deployment**
+
+* [Replit](https://replit.com/)
+* [Railway](https://railway.app/)
+* [Koyeb](https://www.koyeb.com/)
+* [Render](https://render.com/)
+* [Heroku](https://www.heroku.com/) (deprecated free tier)
+
+---
+
+## 📚 **Supported Languages**
+
+* `en: English`
+* `vi: Vietnamese` (optional)
+* Change in `config.json` and `languages/` folder.
+
+---
 
 ## 📌 **Common Problems**
-<details>
-        <summary>
-                📌 Error 400: redirect_uri_mismatch
-        </summary>
-        <p><img src="https://i.ibb.co/6Fbjd4r/image.png" width="250px"></p> 
-        <p>1. Enable Google Drive API: <a href="https://youtu.be/nTIT8OQeRnY?t=347">Tutorial</a></p>
-        <p>2. Add uri <a href="https://developers.google.com/oauthplayground">https://developers.google.com/oauthplayground</a> (not <a href="https://developers.google.com/oauthplayground/">https://developers.google.com/oauthplayground/</a>) to <b>Authorized redirect URIs</b> in <b>OAuth consent screen:</b> <a href="https://youtu.be/nTIT8OQeRnY?t=491">Tutorial</a></p>  
-        <p>3. Choose <b>https://www.googleapis.com/auth/drive</b> and <b>https://mail.google.com/</b> in <b>OAuth 2.0 Playground</b>: <a href="https://youtu.be/nTIT8OQeRnY?t=600">Tutorial</a></p>
-</details>
 
-<details>
-        <summary>
-                📌 Error for site owners: Invalid domain for site key
-        </summary>
-                <p><img src="https://i.ibb.co/2gZttY7/image.png" width="250px"></p>
-                <p>1. Go to <a href="https://www.google.com/recaptcha/admin">https://www.google.com/recaptcha/admin</a></p>
-                <p>2. Add domain <b>repl.co</b> (not <b>repl.com</b>) to <b>Domains</b> in <b>reCAPTCHA v2</b> <a href="https://youtu.be/nTIT8OQeRnY?t=698">Tutorial</a></p>
-</details>
+* **Error 400: redirect\_uri\_mismatch** → Check Google Drive API redirect URI.
+* **GaxiosError: invalid\_grant / invalid\_client** → Ensure Google OAuth credentials are correct.
+* **Error 403: access\_denied** → Ensure project published or authorized accounts added.
 
-<details>
-        <summary>
-                📌 GaxiosError: invalid_grant, unauthorized_client 
-        </summary>
-                <p><img src="https://i.ibb.co/n7w9TkH/image.png" width="250px"></p>
-                <p><img src="https://i.ibb.co/XFKKY9c/image.png" width="250px"></p>
-                <p><img src="https://i.ibb.co/f4mc5Dp/image.png" width="250px"></p>
-                <p>- If you don't publish the project in google console, the refresh token will expire after 1 week and you need to get it back. <a href="https://youtu.be/nTIT8OQeRnY?t=445">Tuatorial</a></p>
-</details>
+---
 
-<details>
-        <summary>
-                📌 GaxiosError: invalid_client
-        </summary>
-                <p><img src="https://i.ibb.co/st3W6v4/Pics-Art-01-01-09-10-49.jpg" width="250px"></p>
-                <p>- Check if you have entered your google project client_id correctly <a href="https://youtu.be/nTIT8OQeRnY?t=509">Tuatorial</a></p>
-</details>
-
-<details>
-        <summary>
-                📌 Error 403: access_denied
-        </summary>
-                <p><img src="https://i.ibb.co/dtrw5x3/image.png" width="250px"></p>
-                <p>- If you don't publish the project in google console only the approved accounts added to the project can use it <a href="https://youtu.be/nTIT8OQeRnY?t=438">Tuatorial</a></p>
-</details>
-
-## ❌ **DO NOT USE THE ORIGINAL UNDERGRADUATE VERSION**
-- The use of unknown source code can lead to the device being infected with viruses, malware, hacked social accounts, banks, ...
-- Goat-Bot-V2 is only published at https://github.com/ntkhang03/Goat-Bot-V2, all other sources, all forks from other github, replit,... are fake, violate policy
-- If you use from other sources (whether accidentally or intentionally) it means that you are in violation and will be banned without notice
 ## 📸 **Screenshots**
-- ### Bot
-<details>
-        <summary>
-                Rank system
-        </summary>
 
-  - Rank card:
-  <p><img src="https://i.ibb.co/d0JDJxF/rank.png" width="399px"></p>
+* **Rank System**
 
-  - Rankup notification:
-  <p><img src="https://i.ibb.co/WgZzthH/rankup.png" width="399px"></p>
+<p align="center"><img src="https://i.ibb.co/d0JDJxF/rank.png" width="400px"></p>
+- **Weather Module**
+<p align="center"><img src="https://i.ibb.co/2FwWVLv/weather.png" width="400px"></p>
+- **Dashboard**
+<p align="center"><img src="https://i.postimg.cc/GtwP4Cqm/Screenshot-2023-12-23-105357.png" width="400px"></p>
 
-  - Custom rank card:
-  <p><img src="https://i.ibb.co/hLTThLW/customrankcard.png" width="399px"></p>
-</details>
+---
 
-<details>
-        <summary>
-                Weather
-        </summary>
-        <p><img src="https://i.ibb.co/2FwWVLv/weather.png" width="399px"></p>
-</details>
+## ✨ **Author**
 
-<details>
-        <summary>
-                Auto send notification when have user join or leave box chat (you can custom message)
-        </summary>
-        <p><img src="https://i.ibb.co/Jsb5Jxf/wcgb.png" width="399px"></p>
-</details>
+* **Gtajisan**
+* Email: `ffjisan804@gmail.com`
+* GitHub: [frn-development](https://github.com/frn-development)
 
-<details>
-        <summary>
-                Openjourney
-        </summary>
-        <p><img src="https://i.ibb.co/XJfwj1X/Screenshot-2023-05-09-22-43-58-630-com-facebook-orca.jpg" width="399px"></p>
-</details>
-
-<details>
-        <summary>
-                GPT
-        </summary>
-        <p><img src="https://i.ibb.co/D4wRbM3/Screenshot-2023-05-09-22-47-48-037-com-facebook-orca.jpg" width="399px"></p>
-        <p><img src="https://i.ibb.co/z8HqPkH/Screenshot-2023-05-09-22-47-53-737-com-facebook-orca.jpg" width="399px"></p>
-        <p><img src="https://i.ibb.co/19mZQpR/Screenshot-2023-05-09-22-48-02-516-com-facebook-orca.jpg" width="399px"></p>
-</details>
-
-
-
-- ### Dashboard
-<details>
-        <summary>
-                Home:
-        </summary>
-        <p><img src="https://i.ibb.co/xzv6s2j/dbHome.png" width="399px"></p>
-</details>
-
-<details>
-        <summary>
-                Stats:
-        </summary>
-        <p><img src="https://i.ibb.co/zVZv9LF/dbStats.png" width="399px"></p>
-</details>
-
-<details>
-        <summary>
-                Login/Register:
-        </summary>
-        <p><img src="https://i.ibb.co/SK61MRx/dbLogin.png" width="399px"></p>
-        <p><img src="https://i.ibb.co/1rchbb1/db-Register.png" width="399px"></p>
-</details>
-
-<details>
-        <summary>
-                Dashboard Thread:
-        </summary>
-        <p><img src="https://i.ibb.co/NK5yYwx/dbThread.png" width="399px"></p>
-</details>
-
-<details>
-        <summary>
-                Custom on/off:
-        </summary>
-        <p><img src="https://i.ibb.co/mJqsP2L/dbCustom.png" width="399px"></p>
-</details>
-
-<details>
-        <summary>
-                Custom welcome message (similar with leave, rankup (coming soon), custom command (coming soon))
-        </summary>
-        <p><img src="https://i.ibb.co/3SyfQkz/db-Custom-Welcome.png" width="399px"></p>
-</details>
-
-## ✨ **Copyright (C)**
-- **[NTKhang (NTKhang03)](https://github.com/ntkhang03)**
+---
 
 ## 📜 **License**
 
-**VIETNAMESE**
+* MIT License
+* Do not remove credits.
+* Do not sell, monetize, or claim the source as your own.
 
-- ***Nếu bạn vi phạm bất kỳ quy tắc nào, bạn sẽ bị cấm sử dụng dự án của tôi***
-- Không bán mã nguồn của tôi
-- Không tự xưng là chủ sở hữu của mã nguồn của tôi
-- Không kiếm tiền từ mã nguồn của tôi (chẳng hạn như: mua bán lệnh, mua bán/cho thuê bot, kêu gọi quyên góp, v.v.)
-- Không xóa/sửa đổi credit (tên tác giả) trong mã nguồn của tôi
+---
 
-**ENGLISH**
-
-- ***If you violate any rules, you will be banned from using my project***
-- Don't sell my source code
-- Don't claim my source code as your own
-- Do not monetize my source code (such as: buy and sell commands, buy and sell bots, call for donations, etc.)
-- Don't remove/edit my credits (author name) in my source code
-
+> 🚀 **Run `npm run f` to start Baka-Chan!**
