@@ -1,5 +1,13 @@
-<img src="https://i.ibb.co/RQ28H2p/banner.png" alt="banner">
-<h1 align="center"><img src="./dashboard/images/logo-non-bg.png" width="22px"> Goat Bot V2- Chatbot Messenger</h1>
+# 🤖 Baka-Chan V2 - Facebook Messenger Bot
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Version-2.0.0-blue.svg" alt="Version">
+  <img src="https://img.shields.io/badge/Node.js-20.x-green.svg" alt="Node.js">
+  <img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License">
+</p>
+
+<h1 align="center">Baka-Chan V2 - Powerful Messenger Bot</h1>
+<p align="center"><strong>Bot made by Gtajisan aka Farhan ✨</strong></p>
 
 
 ## Introduction
@@ -18,9 +26,9 @@
 - If you encounter any issues or have questions related to this project, please don't hesitate to reach out to us on messenger. we're here to assist you!
 
 <p align="center">
-		<img align="center" alt="PNG" src="https://i.postimg.cc/Y2XShSm8/86678c65-896a-47fe-8256-3e8e76dd26d6.jpg"/>
+                <img align="center" alt="PNG" src="https://i.postimg.cc/Y2XShSm8/86678c65-896a-47fe-8256-3e8e76dd26d6.jpg"/>
 <h1 align='center'>
-	
+        
 - [📝 **Note**](#-note)
 - [🚧 **Requirement**](#-requirement)
 - [📝 **Tutorial**](#-tutorial)
@@ -84,48 +92,48 @@ If you have major coding issues with this bot, please join and ask for help.
 
 ## 📌 **Common Problems**
 <details>
-	<summary>
-		📌 Error 400: redirect_uri_mismatch
-	</summary>
-	<p><img src="https://i.ibb.co/6Fbjd4r/image.png" width="250px"></p> 
-	<p>1. Enable Google Drive API: <a href="https://youtu.be/nTIT8OQeRnY?t=347">Tutorial</a></p>
-	<p>2. Add uri <a href="https://developers.google.com/oauthplayground">https://developers.google.com/oauthplayground</a> (not <a href="https://developers.google.com/oauthplayground/">https://developers.google.com/oauthplayground/</a>) to <b>Authorized redirect URIs</b> in <b>OAuth consent screen:</b> <a href="https://youtu.be/nTIT8OQeRnY?t=491">Tutorial</a></p>  
-	<p>3. Choose <b>https://www.googleapis.com/auth/drive</b> and <b>https://mail.google.com/</b> in <b>OAuth 2.0 Playground</b>: <a href="https://youtu.be/nTIT8OQeRnY?t=600">Tutorial</a></p>
+        <summary>
+                📌 Error 400: redirect_uri_mismatch
+        </summary>
+        <p><img src="https://i.ibb.co/6Fbjd4r/image.png" width="250px"></p> 
+        <p>1. Enable Google Drive API: <a href="https://youtu.be/nTIT8OQeRnY?t=347">Tutorial</a></p>
+        <p>2. Add uri <a href="https://developers.google.com/oauthplayground">https://developers.google.com/oauthplayground</a> (not <a href="https://developers.google.com/oauthplayground/">https://developers.google.com/oauthplayground/</a>) to <b>Authorized redirect URIs</b> in <b>OAuth consent screen:</b> <a href="https://youtu.be/nTIT8OQeRnY?t=491">Tutorial</a></p>  
+        <p>3. Choose <b>https://www.googleapis.com/auth/drive</b> and <b>https://mail.google.com/</b> in <b>OAuth 2.0 Playground</b>: <a href="https://youtu.be/nTIT8OQeRnY?t=600">Tutorial</a></p>
 </details>
 
 <details>
-	<summary>
-		📌 Error for site owners: Invalid domain for site key
-	</summary>
-		<p><img src="https://i.ibb.co/2gZttY7/image.png" width="250px"></p>
-		<p>1. Go to <a href="https://www.google.com/recaptcha/admin">https://www.google.com/recaptcha/admin</a></p>
-		<p>2. Add domain <b>repl.co</b> (not <b>repl.com</b>) to <b>Domains</b> in <b>reCAPTCHA v2</b> <a href="https://youtu.be/nTIT8OQeRnY?t=698">Tutorial</a></p>
+        <summary>
+                📌 Error for site owners: Invalid domain for site key
+        </summary>
+                <p><img src="https://i.ibb.co/2gZttY7/image.png" width="250px"></p>
+                <p>1. Go to <a href="https://www.google.com/recaptcha/admin">https://www.google.com/recaptcha/admin</a></p>
+                <p>2. Add domain <b>repl.co</b> (not <b>repl.com</b>) to <b>Domains</b> in <b>reCAPTCHA v2</b> <a href="https://youtu.be/nTIT8OQeRnY?t=698">Tutorial</a></p>
 </details>
 
 <details>
-	<summary>
-		📌 GaxiosError: invalid_grant, unauthorized_client 
-	</summary>
-		<p><img src="https://i.ibb.co/n7w9TkH/image.png" width="250px"></p>
-		<p><img src="https://i.ibb.co/XFKKY9c/image.png" width="250px"></p>
-		<p><img src="https://i.ibb.co/f4mc5Dp/image.png" width="250px"></p>
-		<p>- If you don't publish the project in google console, the refresh token will expire after 1 week and you need to get it back. <a href="https://youtu.be/nTIT8OQeRnY?t=445">Tuatorial</a></p>
+        <summary>
+                📌 GaxiosError: invalid_grant, unauthorized_client 
+        </summary>
+                <p><img src="https://i.ibb.co/n7w9TkH/image.png" width="250px"></p>
+                <p><img src="https://i.ibb.co/XFKKY9c/image.png" width="250px"></p>
+                <p><img src="https://i.ibb.co/f4mc5Dp/image.png" width="250px"></p>
+                <p>- If you don't publish the project in google console, the refresh token will expire after 1 week and you need to get it back. <a href="https://youtu.be/nTIT8OQeRnY?t=445">Tuatorial</a></p>
 </details>
 
 <details>
-	<summary>
-		📌 GaxiosError: invalid_client
-	</summary>
-		<p><img src="https://i.ibb.co/st3W6v4/Pics-Art-01-01-09-10-49.jpg" width="250px"></p>
-		<p>- Check if you have entered your google project client_id correctly <a href="https://youtu.be/nTIT8OQeRnY?t=509">Tuatorial</a></p>
+        <summary>
+                📌 GaxiosError: invalid_client
+        </summary>
+                <p><img src="https://i.ibb.co/st3W6v4/Pics-Art-01-01-09-10-49.jpg" width="250px"></p>
+                <p>- Check if you have entered your google project client_id correctly <a href="https://youtu.be/nTIT8OQeRnY?t=509">Tuatorial</a></p>
 </details>
 
 <details>
-	<summary>
-		📌 Error 403: access_denied
-	</summary>
-		<p><img src="https://i.ibb.co/dtrw5x3/image.png" width="250px"></p>
-		<p>- If you don't publish the project in google console only the approved accounts added to the project can use it <a href="https://youtu.be/nTIT8OQeRnY?t=438">Tuatorial</a></p>
+        <summary>
+                📌 Error 403: access_denied
+        </summary>
+                <p><img src="https://i.ibb.co/dtrw5x3/image.png" width="250px"></p>
+                <p>- If you don't publish the project in google console only the approved accounts added to the project can use it <a href="https://youtu.be/nTIT8OQeRnY?t=438">Tuatorial</a></p>
 </details>
 
 ## ❌ **DO NOT USE THE ORIGINAL UNDERGRADUATE VERSION**
@@ -135,9 +143,9 @@ If you have major coding issues with this bot, please join and ask for help.
 ## 📸 **Screenshots**
 - ### Bot
 <details>
-	<summary>
- 		Rank system
-	</summary>
+        <summary>
+                Rank system
+        </summary>
 
   - Rank card:
   <p><img src="https://i.ibb.co/d0JDJxF/rank.png" width="399px"></p>
@@ -150,79 +158,79 @@ If you have major coding issues with this bot, please join and ask for help.
 </details>
 
 <details>
-	<summary>
- 		Weather
-	</summary>
-	<p><img src="https://i.ibb.co/2FwWVLv/weather.png" width="399px"></p>
+        <summary>
+                Weather
+        </summary>
+        <p><img src="https://i.ibb.co/2FwWVLv/weather.png" width="399px"></p>
 </details>
 
 <details>
-	<summary>
- 		Auto send notification when have user join or leave box chat (you can custom message)
-	</summary>
-	<p><img src="https://i.ibb.co/Jsb5Jxf/wcgb.png" width="399px"></p>
+        <summary>
+                Auto send notification when have user join or leave box chat (you can custom message)
+        </summary>
+        <p><img src="https://i.ibb.co/Jsb5Jxf/wcgb.png" width="399px"></p>
 </details>
 
 <details>
-	<summary>
- 		Openjourney
-	</summary>
-	<p><img src="https://i.ibb.co/XJfwj1X/Screenshot-2023-05-09-22-43-58-630-com-facebook-orca.jpg" width="399px"></p>
+        <summary>
+                Openjourney
+        </summary>
+        <p><img src="https://i.ibb.co/XJfwj1X/Screenshot-2023-05-09-22-43-58-630-com-facebook-orca.jpg" width="399px"></p>
 </details>
 
 <details>
-	<summary>
- 		GPT
-	</summary>
-	<p><img src="https://i.ibb.co/D4wRbM3/Screenshot-2023-05-09-22-47-48-037-com-facebook-orca.jpg" width="399px"></p>
-	<p><img src="https://i.ibb.co/z8HqPkH/Screenshot-2023-05-09-22-47-53-737-com-facebook-orca.jpg" width="399px"></p>
-	<p><img src="https://i.ibb.co/19mZQpR/Screenshot-2023-05-09-22-48-02-516-com-facebook-orca.jpg" width="399px"></p>
+        <summary>
+                GPT
+        </summary>
+        <p><img src="https://i.ibb.co/D4wRbM3/Screenshot-2023-05-09-22-47-48-037-com-facebook-orca.jpg" width="399px"></p>
+        <p><img src="https://i.ibb.co/z8HqPkH/Screenshot-2023-05-09-22-47-53-737-com-facebook-orca.jpg" width="399px"></p>
+        <p><img src="https://i.ibb.co/19mZQpR/Screenshot-2023-05-09-22-48-02-516-com-facebook-orca.jpg" width="399px"></p>
 </details>
 
 
 
 - ### Dashboard
 <details>
-	<summary>
- 		Home:
-	</summary>
-	<p><img src="https://i.ibb.co/xzv6s2j/dbHome.png" width="399px"></p>
+        <summary>
+                Home:
+        </summary>
+        <p><img src="https://i.ibb.co/xzv6s2j/dbHome.png" width="399px"></p>
 </details>
 
 <details>
-	<summary>
- 		Stats:
-	</summary>
-	<p><img src="https://i.ibb.co/zVZv9LF/dbStats.png" width="399px"></p>
+        <summary>
+                Stats:
+        </summary>
+        <p><img src="https://i.ibb.co/zVZv9LF/dbStats.png" width="399px"></p>
 </details>
 
 <details>
-	<summary>
- 		Login/Register:
-	</summary>
-	<p><img src="https://i.ibb.co/SK61MRx/dbLogin.png" width="399px"></p>
-	<p><img src="https://i.ibb.co/1rchbb1/db-Register.png" width="399px"></p>
+        <summary>
+                Login/Register:
+        </summary>
+        <p><img src="https://i.ibb.co/SK61MRx/dbLogin.png" width="399px"></p>
+        <p><img src="https://i.ibb.co/1rchbb1/db-Register.png" width="399px"></p>
 </details>
 
 <details>
-	<summary>
- 		Dashboard Thread:
-	</summary>
-	<p><img src="https://i.ibb.co/NK5yYwx/dbThread.png" width="399px"></p>
+        <summary>
+                Dashboard Thread:
+        </summary>
+        <p><img src="https://i.ibb.co/NK5yYwx/dbThread.png" width="399px"></p>
 </details>
 
 <details>
-	<summary>
- 		Custom on/off:
-	</summary>
-	<p><img src="https://i.ibb.co/mJqsP2L/dbCustom.png" width="399px"></p>
+        <summary>
+                Custom on/off:
+        </summary>
+        <p><img src="https://i.ibb.co/mJqsP2L/dbCustom.png" width="399px"></p>
 </details>
 
 <details>
-	<summary>
- 		Custom welcome message (similar with leave, rankup (coming soon), custom command (coming soon))
-	</summary>
-	<p><img src="https://i.ibb.co/3SyfQkz/db-Custom-Welcome.png" width="399px"></p>
+        <summary>
+                Custom welcome message (similar with leave, rankup (coming soon), custom command (coming soon))
+        </summary>
+        <p><img src="https://i.ibb.co/3SyfQkz/db-Custom-Welcome.png" width="399px"></p>
 </details>
 
 ## ✨ **Copyright (C)**
