@@ -1,11 +1,5 @@
 # 🤖 Baka-Chan V2 - Facebook Messenger Bot
 
-<p align="center">
-  <img src="https://img.shields.io/badge/Version-2.0.0-blue.svg" alt="Version">
-  <img src="https://img.shields.io/badge/Node.js-20.x-green.svg" alt="Node.js">
-  <img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License">
-</p>
-
 <h1 align="center">Baka-Chan V2 - Powerful Messenger Bot</h1>
 <p align="center"><strong>Bot made by Gtajisan aka Farhan ✨</strong></p>
 
