@@ -26,27 +26,6 @@
 
 - If you encounter any issues or have questions related to this project, please don't hesitate to reach out to us on messenger. we're here to assist you!
 
-<p align="center">
-                <img align="center" alt="PNG" src="https://i.postimg.cc/Y2XShSm8/86678c65-896a-47fe-8256-3e8e76dd26d6.jpg"/>
-<h1 align='center'>
-        
-- [📝 **Note**](#-note)
-- [🚧 **Requirement**](#-requirement)
-- [📝 **Tutorial**](#-tutorial)
-- [🔔 **How to get notification when have new update?**](#-how-to-get-notification-when-have-new-update)
-- [🆙 **How to Update**](#-how-to-update)
-- [🛠️ **How to create new commands**](#️-how-to-create-new-commands)
-- [💭 **Support**](#-support)
-- [📚 **Support Languages in source code**](#-support-languages-in-source-code)
-- [📌 **Common Problems**](#-common-problems)
-- [❌ **DO NOT USE THE ORIGINAL UNDERGRADUATE VERSION**](#-do-not-use-the-original-undergraduate-version)
-- [📸 **Screenshots**](#-screenshots)
-- [✨ **Copyright (C)**](#-copyright-c)
-- [📜 **License**](#-license)
-- 
-
-[![unnamed-3-2.jpg](https://i.postimg.cc/bwBpGb9q/unnamed-3-2.jpg)](https://postimg.cc/mPC0JPnn)
-
 <h1 align="center"><img src="./dashboard/images/logo-non-bg.png" width="22px"> Baka-Chan - Bot Chat Messenger</h1>
 
 <p align="center">
